@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --background: #000000;
+  --foreground: #f8fafc;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100vh;
+  font-family: 'Inter', 'SF Pro Display', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* Device card hover lift effect */
+[style*="deviceCard"],
+div[style*="border-radius: 20px"][style*="backdropFilter"] {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+div[style*="border-radius: 20px"][style*="backdropFilter"]:hover {
+  transform: translateY(-3px) !important;
+}
+
+/* Input focus glow */
+input:focus {
+  border-color: rgba(37, 99, 235, 0.5) !important;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+  outline: none !important;
+}
+
+/* Sign Out button hover */
+button[style*="Sign Out"]:hover,
+button:hover[style*="rgba(255,255,255,0.04)"] {
+  background: rgba(255,255,255,0.08) !important;
+  color: rgba(255,255,255,0.8) !important;
+}
+
+/* Login button hover */
+button[type="submit"]:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+button { transition: all 0.2s ease; }
+
+/* Stat cards - subtle hover */
+div[style*="statCard"]:hover {
+  transform: translateY(-2px);
+}
+
+/* Smooth page transition */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+main, header, section {
+  animation: fadeIn 0.4s ease both;
+}
