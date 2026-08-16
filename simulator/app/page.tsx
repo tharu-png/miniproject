@@ -78,7 +78,9 @@ const TYPE_ICON: Record<string, string> = {
   outlet: "🔌",
   multi_switch: "🎛️",
   scheduled: "⏱️",
+  iron: "⏱️",
   light: "💡",
+  smart_bulb: "💡",
   camera: "📷",
 };
 
@@ -171,7 +173,7 @@ export default function SimulatorPage() {
       updatedAt: serverTimestamp(),
     };
 
-    if (device.type === "scheduled" || device.type === "light") {
+    if (device.type === "scheduled" || device.type === "iron" || device.type === "light" || device.type === "smart_bulb") {
       updateData.turnedOnAt = newStatus === "ON" ? serverTimestamp() : null;
     }
 
@@ -324,6 +326,7 @@ function DevicePanel({ device, onToggle, onToggleSwitch }: { device: Device; onT
           </div>
         );
       case "scheduled":
+      case "iron":
         return (
           <div style={s.hwCenter}>
             <button onClick={onToggle} style={{...s.hwMainBtn, backgroundColor: isOn ? THEME.danger : THEME.success}}>
@@ -333,6 +336,7 @@ function DevicePanel({ device, onToggle, onToggleSwitch }: { device: Device; onT
           </div>
         );
       case "light":
+      case "smart_bulb":
         return (
           <div style={s.hwCenter}>
              <div onClick={onToggle} style={{...s.hwLightBulb, opacity: isOn ? 1 : 0.2, textShadow: isOn ? `0 0 30px ${THEME.warning}` : "none"}}>💡</div>

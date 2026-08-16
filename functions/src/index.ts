@@ -33,7 +33,7 @@ export const safetyCutoffWorker = functions.pubsub
           .collection("floors")
           .doc(floorId)
           .collection("devices")
-          .where("type", "in", ["scheduled"])
+          .where("type", "in", ["scheduled", "iron"])
           .where("status", "==", "ON")
           .get();
 
@@ -140,7 +140,7 @@ export const lightScheduleWorker = functions.pubsub
           .collection("floors")
           .doc(floorId)
           .collection("devices")
-          .where("type", "==", "light")
+          .where("type", "in", ["light", "smart_bulb"])
           .where("autoSchedule", "==", true)
           .get();
 

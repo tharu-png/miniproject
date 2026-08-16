@@ -42,6 +42,7 @@ const DEVICE_ICONS: Record<string, keyof typeof MaterialCommunityIcons.glyphMap 
   outlet: "power-plug",
   multi_switch: "light-switch",
   iron: "iron",
+  scheduled: "iron",
   smart_bulb: "lightbulb-variant",
   light: "lightbulb",
   camera: "cctv",
@@ -184,7 +185,8 @@ export function FloorPlanScreen({ floor, homeId, onBack }: Props) {
     const dev = devices.find(d => d.id === selectedDevice.id) || selectedDevice;
     switch (dev.type) {
       case "multi_switch": return <MultiSwitchCard device={dev} />;
-      case "iron": return <ScheduledDeviceCard device={dev} />;
+      case "iron":
+      case "scheduled": return <ScheduledDeviceCard device={dev} />;
       case "smart_bulb": return <LightCard device={dev} />;
       case "light": return <LightCard device={dev} />;
       case "camera": return <CameraCard device={dev} />;

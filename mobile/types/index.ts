@@ -6,6 +6,7 @@ export type DeviceType =
   | "outlet"
   | "multi_switch"
   | "iron"
+  | "scheduled"
   | "smart_bulb"
   | "light"
   | "camera";

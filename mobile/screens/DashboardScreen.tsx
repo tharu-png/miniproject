@@ -80,6 +80,7 @@ const DEVICE_ICONS: Record<string, keyof typeof MaterialCommunityIcons.glyphMap>
   outlet: "power-plug",
   multi_switch: "light-switch",
   scheduled: "iron",
+  iron: "iron",
   light: "lightbulb",
   camera: "cctv",
 };

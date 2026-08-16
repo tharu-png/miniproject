@@ -67,7 +67,7 @@ export async function toggleDevice(device: Device, newStatus: "ON" | "OFF") {
     updatedAt: serverTimestamp(),
   };
 
-  if (device.type === "scheduled" || device.type === "light") {
+  if (device.type === "scheduled" || device.type === "iron" || device.type === "light" || device.type === "smart_bulb") {
     if (newStatus === "ON") {
       updateData.turnedOnAt = serverTimestamp();
     } else {

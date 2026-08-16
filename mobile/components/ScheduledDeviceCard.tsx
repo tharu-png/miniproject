@@ -7,10 +7,11 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Alert,
+  TextInput,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Device } from "../types";
-import { toggleDevice, removeDeviceFromApp } from "../services/deviceService";
+import { toggleDevice, removeDeviceFromApp, updateScheduledConfig } from "../services/deviceService";
 
 const THEME = {
   primary: "#4f46e5",
@@ -26,6 +27,8 @@ const THEME = {
 
 export function ScheduledDeviceCard({ device }: { device: Device }) {
   const [loading, setLoading] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [newMax, setNewMax] = useState(String(device.maxOnDuration ?? 30));
   const [remaining, setRemaining] = useState(0);
   const autoTurnOffTriggeredRef = useRef(false);
 
@@ -51,6 +54,23 @@ export function ScheduledDeviceCard({ device }: { device: Device }) {
           ]
         );
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateMax = async () => {
+    const val = parseInt(newMax);
+    if (isNaN(val) || val < 1) {
+      Alert.alert("Invalid Duration", "Please enter a valid number of minutes.");
+      return;
+    }
+    setLoading(true);
+    try {
+      await updateScheduledConfig(device, { maxOnDuration: val });
+      setEditing(false);
+    } catch (e: any) {
+      Alert.alert("Error", e.message);
     } finally {
       setLoading(false);
     }
@@ -91,7 +111,7 @@ export function ScheduledDeviceCard({ device }: { device: Device }) {
           disabled={loading}
           style={[styles.mainBtn, isOn ? { backgroundColor: isCritical ? THEME.danger : THEME.warning } : { backgroundColor: THEME.text }]}
         >
-          {loading ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.mainBtnText}>{isOn ? "KILL POWER" : "MANUAL START"}</Text>}
+          {loading && !editing ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.mainBtnText}>{isOn ? "KILL POWER" : "MANUAL START"}</Text>}
         </TouchableOpacity>
       </View>
 
@@ -107,7 +127,29 @@ export function ScheduledDeviceCard({ device }: { device: Device }) {
              <View style={styles.track}>
                 <View style={[styles.fill, { width: `${pct}%`, backgroundColor: isCritical ? THEME.danger : THEME.warning }]} />
              </View>
-             <Text style={styles.maxLabel}>{maxD}m AUTO-CUTOFF</Text>
+
+             {editing ? (
+               <View style={styles.editRow}>
+                 <TextInput
+                   style={styles.editInput}
+                   value={newMax}
+                   onChangeText={setNewMax}
+                   keyboardType="numeric"
+                   autoFocus
+                 />
+                 <TouchableOpacity onPress={handleUpdateMax} style={styles.editBtn}>
+                   <Ionicons name="checkmark-circle" size={24} color={THEME.success} />
+                 </TouchableOpacity>
+                 <TouchableOpacity onPress={() => setEditing(false)} style={styles.editBtn}>
+                   <Ionicons name="close-circle" size={24} color={THEME.danger} />
+                 </TouchableOpacity>
+               </View>
+             ) : (
+               <TouchableOpacity onPress={() => setEditing(true)} style={styles.limitRow}>
+                 <Text style={styles.maxLabel}>{maxD}m AUTO-CUTOFF</Text>
+                 <Ionicons name="create-outline" size={14} color={THEME.textMuted} style={{ marginLeft: 4 }} />
+               </TouchableOpacity>
+             )}
           </View>
         </View>
       </View>
@@ -150,5 +192,25 @@ const styles = StyleSheet.create({
   progressArea: { flex: 1 },
   track: { height: 8, backgroundColor: THEME.border, borderRadius: 4, overflow: "hidden", marginBottom: 8 },
   fill: { height: "100%", borderRadius: 4 },
-  maxLabel: { fontSize: 10, fontWeight: "700", color: THEME.textMuted, textAlign: "right" },
+  limitRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' },
+  maxLabel: { fontSize: 12, fontWeight: "700", color: THEME.textMuted, textAlign: "right" },
+  editRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 8 },
+  editInput: {
+    backgroundColor: THEME.bg,
+    borderWidth: 1,
+    borderColor: THEME.border,
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 0,
+    height: 38,
+    width: 80,
+    fontSize: 16,
+    fontWeight: '700',
+    color: THEME.text,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
+  editBtn: {
+    padding: 4,
+  }
 });
